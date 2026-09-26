@@ -17,12 +17,15 @@
   .brand { color: #f0f6fc; font-weight: bold; text-decoration: none; letter-spacing: -.3px; }
   .brand b { color: #d2a8ff; }
   nav { display: flex; align-items: center; gap: 1.1rem; }
-  nav a { color: #8b949e; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; }
+  nav a { color: #8b949e; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; white-space: nowrap; }
   nav a:hover { color: #f0f6fc; }
   nav .star { color: #0d0f14; background: #d2a8ff; padding: .35rem .7rem; border-radius: 6px; font-weight: bold; }
   nav .star:hover { color: #0d0f14; background: #e2c5ff; }
+  .xbtn { color: #f0f6fc !important; background: #000; border: 1px solid #30363d; padding: .35rem .7rem; border-radius: 6px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: .45rem; }
+  .xbtn:hover { border-color: #8b949e; }
+  footer .xbtn { margin-right: .6rem; font-size: 13px; }
   main { flex: 1; display: grid; place-content: center; padding: 1.5rem; max-width: 100vw; box-sizing: border-box; min-height: 0; }
-  @media (max-width: 560px) { .hide-sm { display: none; } header { padding: .7rem 1rem; } }
+  @media (max-width: 560px) { .hide-sm { display: none; } header { padding: .7rem 1rem; font-size: 13px; } nav { gap: .5rem; } }
   pre { margin: 0; font-size: clamp(6px, min(1.55vw, 2.6vh), 15px); line-height: 1.25; overflow: hidden; cursor: pointer; }
   .t { color: #d2a8ff; font-weight: bold; } .d { color: #6e7681; } .c { color: #79c0ff; }
   .g { color: #7ee787; } .y { color: #e3b341; } .a { color: #ff7b72; }
@@ -37,14 +40,15 @@
   <nav>
     <a class="hide-sm" href="https://github.com/ariel-frischer/SoftwareFactoryFactory/releases">Releases</a>
     <a class="hide-sm" href="https://github.com/ariel-frischer">@ariel-frischer</a>
-    <a class="star" href="https://github.com/ariel-frischer/SoftwareFactoryFactory"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Star on GitHub</a>
+    <a class="xbtn share" href="#" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Share</a>
+    <a class="star" href="https://github.com/ariel-frischer/SoftwareFactoryFactory"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Star<span class="hide-sm">&nbsp;on GitHub</span></a>
   </nav>
 </header>
 <main>
   <pre id="screen" title="click to invest"></pre>
   <footer>
     <code>go install github.com/ariel-frischer/SoftwareFactoryFactory@latest</code><br>
-    <a id="share" href="#">share on X</a> · the factory accepts clicks as investment · ↑↑↓↓←→←→BA
+    <a class="xbtn share" href="#" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Share on X</a>the factory accepts clicks as investment · ↑↑↓↓←→←→BA
   </footer>
 </main>
 <script>
@@ -162,8 +166,11 @@ addEventListener("keydown", e => {
   setTimeout(() => { s.software = 0; log("[ops]   rolled back. factories restored. crisis averted."); }, 2500);
 });
 
-document.getElementById("share").href = "https://x.com/intent/post?text=" + encodeURIComponent(
-  "I built a software factory factory. It builds software factories. Software shipped: 0. " + location.href);
+const shareURL = "https://x.com/intent/post?" + new URLSearchParams({
+  text: "Everyone built a software factory. I built a software factory factory. Software shipped: 0.",
+  url: "https://ariel-frischer.github.io/SoftwareFactoryFactory/",
+});
+document.querySelectorAll(".share").forEach(a => { a.href = shareURL; });
 
 render();
 setInterval(() => { step(); render(); }, 110);
