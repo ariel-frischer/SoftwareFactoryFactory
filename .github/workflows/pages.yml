@@ -36,7 +36,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
-      - run: mkdir site && cp index.html demo.gif media/brag.mp4 media/brag.jpg site/
+      - run: mkdir site && cp index.html demo.gif site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
