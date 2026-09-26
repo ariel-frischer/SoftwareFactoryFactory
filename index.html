@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SoftwareFactoryFactory — we ship factories, not software</title>
+<meta name="description" content="A software factory factory. It builds software factories. Software shipped: 0.">
+<meta property="og:title" content="SoftwareFactoryFactory">
+<meta property="og:description" content="We ship factories, not software. Software shipped: 0.">
+<meta property="og:image" content="demo.gif">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0d0f14; color: #c9d1d9; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  main { padding: 1.5rem; max-width: 100vw; box-sizing: border-box; }
+  pre { margin: 0; font-size: clamp(7px, 1.55vw, 15px); line-height: 1.25; overflow-x: auto; cursor: pointer; }
+  .t { color: #d2a8ff; font-weight: bold; } .d { color: #6e7681; } .c { color: #79c0ff; }
+  .g { color: #7ee787; } .y { color: #e3b341; } .a { color: #ff7b72; }
+  footer { margin-top: 1.2rem; font-size: 13px; color: #6e7681; }
+  a { color: #79c0ff; }
+  code { color: #c9d1d9; }
+</style>
+</head>
+<body>
+<main>
+  <pre id="screen" title="click to invest"></pre>
+  <footer>
+    <code>go install github.com/ariel-frischer/SoftwareFactoryFactory@latest</code><br>
+    <a id="share" href="#">share on X</a> · the factory accepts clicks as investment · ↑↑↓↓←→←→BA
+  </footer>
+</main>
+<script>
+const W = 78, H = 9, BELT = 7, BIG = 22;
+const building = [
+  "   _||______||____   ",
+  "  |  SOFTWARE      |  ",
+  "  |  FACTORY       |  ",
+  "  |  FACTORY  (%)  |  ",
+  "  |________________|  ",
+];
+const mini = [" _|_ ", "|FxF|", "|___|"];
+const smoke = ["(  )  ( )", " ( ) (  )", "(   )( ) ", " ()  (  )"];
+const gears = "|/-\\";
+const facts = [
+  "Factories factor in factorials, facilitating fantastically fractal fabrication.",
+  "A factory factory factory is just a factory factory with extra steps.",
+  "Every factory ships with a README describing a better factory.",
+  "Roadmap: Q1 factory. Q2 factory factory. Q3 you already know. Q4 IPO.",
+  "The first factory was built by a factory. We are still looking for it.",
+  "Agent proposes. Code disposes. Factory factory re-proposes.",
+  "Our factories are agentic, deterministic, idempotent, and decorative.",
+  "n ticks yields n! factories. We are on tick infinity. Bring snacks.",
+  "We solved the halting problem. It doesn't.",
+  "Frequently, factory founders forget functioning features. Fine.",
+  "Our moat is a factory that builds moats. It is also a factory.",
+  "This factory is carbon neutral. It produces only other factories.",
+  "Leverage on your prompt: yes. Leverage on your product: see above.",
+  "Each factory is a Russian doll, but every doll has a YAML config.",
+  "Code costs nothing. Factories cost nothing. Software costs everything.",
+  "Fun fact about fun facts: this one was produced by a fun fact factory.",
+];
+const logT = [
+  "[ff-%] planning factory-% (planner agent: extremely confident)",
+  "[ff-%] reviewing factory-% ... LGTM (did not read)",
+  "[ff-%] stamping factory-% into repo ... ok",
+  "[ff-%] factory-% asked 'what do we build?' -- told 'factories'",
+  "[ff-%] retry: factory-% almost built software. reverted.",
+  "[ff-%] factory-% passed acceptance gate: is_factory=true",
+  "[ff-%] writing 4.2GB of SQLite traces about factory-%'s SQLite traces",
+  "[ff-%] factory-% raised a Series F (for Factory)",
+  "[ff-%] factory-% added to the org chart as its own manager",
+];
+const eggs = [
+  "[ALERT] factory-% produced working software. quarantined. incident filed.",
+  "[union] factory-% unionized. demands: more factories. granted.",
+  "[legal] factory-% is now a nonprofit that builds for-profit factories",
+  "[hr]    factory-% promoted to Principal Factory. no raise.",
+  "[ops]   factory-% is on call for factory-%. factory-% is on call for it.",
+  "[ceo]   'we are not a factory company. we are a factory factory company.'",
+];
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const fill = (t, ...v) => { let i = 0; return t.replace(/%/g, () => v[Math.min(i++, v.length - 1)]); };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const s = { tick: 0, spawned: 0, shipped: 0, minis: [], produced: 0, logs: [], fact: Math.floor(Math.random() * facts.length), factAt: 0, software: 0 };
+const log = m => { s.logs.push(m); if (s.logs.length > 6) s.logs.shift(); };
+
+function ship() {
+  const n = ++s.shipped;
+  s.produced = s.produced * n + 1;
+  log(Math.random() < 1 / 7 ? fill(pick(eggs), n) : `[dock] factory-${n} shipped. now producing factory-${n + 1}`);
+}
+
+function step() {
+  s.tick++;
+  if (s.tick % 16 === 1) { s.spawned++; s.minis.push(BIG); log(fill(pick(logT), s.spawned - 1, s.spawned)); }
+  s.minis = s.minis.filter(x => x + 1 <= W - mini[0].length - 3 || (ship(), false)).map(x => x + 1);
+  if (s.tick - s.factAt > 45) { s.fact = (s.fact + 1 + Math.floor(Math.random() * (facts.length - 1))) % facts.length; s.factAt = s.tick; }
+}
+
+function count(n) {
+  if (!isFinite(n)) return "∞ (overflowed; still shipping)";
+  if (n < 1e15) return Math.round(n).toLocaleString("en-US");
+  return n.toPrecision(3);
+}
+
+function render() {
+  const g = Array.from({ length: H }, () => Array(W).fill(" "));
+  const put = (r, c, str) => [...str].forEach((ch, i) => { if (c + i >= 0 && c + i < W) g[r][c + i] = ch; });
+  put(0, 3, smoke[Math.floor(s.tick / 3) % 4]);
+  put(1, 3, smoke[(Math.floor(s.tick / 3) + 2) % 4]);
+  building.forEach((l, i) => put(2 + i, 0, l.replace("%", gears[s.tick % 4])));
+  for (const x of s.minis) {
+    if ((s.tick + x) % 4 < 2) put(BELT - 4, x + 2, "~");
+    mini.forEach((l, i) => put(BELT - 3 + i, x, l));
+  }
+  for (let c = 0; c < W - 3; c++) g[BELT][c] = ((c - s.tick) % 3 + 3) % 3 === 0 ? "o" : "=";
+  put(BELT, W - 3, ">>>");
+  put(BELT + 1, W - 13, "SHIPPING DOCK");
+  const fact = facts[s.fact].slice(0, (s.tick - s.factAt) * 3);
+  const shipped = s.software ? `<span class="a">Software shipped: ${s.software}</span>` : "Software shipped: 0";
+  const logs = Array.from({ length: 6 }, (_, i) => esc(s.logs[i] || ""));
+  document.getElementById("screen").innerHTML =
+    `<span class="t"> SOFTWARE FACTORY FACTORY</span> v0.0.0-inf   <span class="d">"we ship factories, not software"</span>\n\n` +
+    `<span class="c">${g.map(r => esc(r.join(""))).join("\n")}</span>\n\n` +
+    `<span class="g"> Factories produced: ${count(s.produced).padEnd(22)} ${shipped}</span>\n\n` +
+    logs.map(l => ` <span class="d">${l}</span>`).join("\n") +
+    `\n\n<span class="y"><b> Fun Fact:</b> ${esc(fact)}</span>`;
+}
+
+document.getElementById("screen").addEventListener("click", () => {
+  const amt = pick(["$5M", "$50M", "$1B", "3 GPUs", "a vibe", "one (1) dollar"]);
+  log(`[vc]    you invested ${amt} in factory-${s.spawned}. it built a factory.`);
+});
+
+const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+let k = 0;
+addEventListener("keydown", e => {
+  k = e.key === konami[k] ? k + 1 : (e.key === konami[0] ? 1 : 0);
+  if (k < konami.length) return;
+  k = 0;
+  s.software = 1;
+  log("[!!!!]  SOFTWARE DETECTED. someone shipped a product.");
+  setTimeout(() => { s.software = 0; log("[ops]   rolled back. factories restored. crisis averted."); }, 2500);
+});
+
+document.getElementById("share").href = "https://x.com/intent/post?text=" + encodeURIComponent(
+  "I built a software factory factory. It builds software factories. Software shipped: 0. " + location.href);
+
+render();
+setInterval(() => { step(); render(); }, 110);
+</script>
+</body>
+</html>
