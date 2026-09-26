@@ -5,8 +5,8 @@
 
 ![SoftwareFactoryFactory stamping out software factories on a conveyor belt](demo.gif)
 
-[![▶ Watch the 22s launch video](media/brag.jpg)](media/brag.mp4)
-<p align="center"><a href="media/brag.mp4">▶ Watch the launch video (22s, sound on)</a></p>
+[![▶ Watch the 22s launch video](media/brag.jpg)](https://ariel-frischer.github.io/SoftwareFactoryFactory/brag.mp4)
+<p align="center"><a href="https://ariel-frischer.github.io/SoftwareFactoryFactory/brag.mp4">▶ Watch the launch video (22s, sound on)</a></p>
 
 Everyone has a software factory now. Nobody has a software factory *factory*.
 Until today.
