@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "JBM"; src: local("JetBrains Mono NL"), local("JetBrainsMonoNL-Regular"); font-weight: 400; }
+  @font-face { font-family: "JBM"; src: local("JetBrains Mono NL ExtraBold"), local("JetBrainsMonoNL-ExtraBold"); font-weight: 800; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0d0f14; }
+  body { font-family: "JBM", monospace; color: #c9d1d9; }
+  .layer { position: absolute; inset: 0; will-change: transform, opacity; }
+  #cam { transform-origin: 0 0; }
+  #term { position: absolute; left: 220px; top: 190px; width: 1480px; border-radius: 18px; background: #11141b; box-shadow: 0 30px 80px #0008, 0 0 0 1px #2a2f3a; }
+  #bar { height: 44px; display: flex; align-items: center; gap: 10px; padding-left: 20px; border-bottom: 1px solid #222733; color: #6e7681; font-size: 18px; }
+  #bar i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+  #bar span { margin-left: 18px; }
+  pre { margin: 0; padding: 22px 28px 26px; font: 400 30px/1.28 "JBM", monospace; white-space: pre; }
+  .t { color: #d2a8ff; font-weight: 800; } .d { color: #6e7681; } .c { color: #79c0ff; }
+  .g { color: #7ee787; } .y { color: #e3b341; } .a { color: #ff7b72; font-weight: 800; } .b { font-weight: 800; }
+  #cap { position: absolute; left: 0; right: 0; top: 44px; text-align: center; font: 800 64px/1.1 "JBM"; color: #f0f6fc; letter-spacing: -1px; }
+  #cap span { display: inline-block; padding: 14px 34px; border-radius: 18px; background: #0d0f14ee; box-shadow: 0 10px 40px #000a; }
+  #cap em { font-style: normal; color: #d2a8ff; }
+  .full { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #title h1 { margin: 0; font: 800 132px/1 "JBM"; letter-spacing: -5px; color: #f0f6fc; }
+  #title h1 b { color: #d2a8ff; }
+  #title p { margin: 34px 0 0; font: 400 44px "JBM"; color: #8b949e; }
+  #fact { padding: 0 190px; }
+  #fact .lbl { font: 800 52px "JBM"; color: #e3b341; margin-bottom: 30px; }
+  #fact .txt { font: 800 78px/1.18 "JBM"; color: #f0f6fc; letter-spacing: -2px; text-align: left; min-height: 280px; }
+  #outro h1 { margin: 0; font: 800 116px/1 "JBM"; letter-spacing: -4px; color: #f0f6fc; }
+  #outro h1 b { color: #d2a8ff; }
+  #outro .tag { margin-top: 30px; font: 400 44px "JBM"; color: #8b949e; }
+  #outro .cmd { margin-top: 60px; padding: 22px 36px; border-radius: 14px; background: #161b22; border: 1px solid #30363d; font: 400 34px "JBM"; color: #c9d1d9; }
+  #outro .cmd span { color: #7ee787; }
+  #outro .zero { margin-top: 44px; font: 800 38px "JBM"; color: #7ee787; }
+  #keys { position: absolute; left: 0; right: 0; top: 50px; display: flex; justify-content: center; gap: 14px; }
+  #keys div { width: 74px; height: 74px; border-radius: 14px; background: #1f2430; border: 2px solid #3a4150; border-bottom-width: 6px; font: 800 40px/68px "JBM"; text-align: center; color: #f0f6fc; }
+  #flash { background: #ff3b30; mix-blend-mode: screen; }
+  #rail { position: absolute; left: 0; bottom: 0; height: 6px; width: 1920px; background: #d2a8ff; transform-origin: 0 0; }
+</style>
+</head>
+<body>
+<div id="cam" class="layer">
+  <div id="term">
+    <div id="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span>~ $ SoftwareFactoryFactory</span></div>
+    <pre id="screen"></pre>
+  </div>
+</div>
+<div id="cap"></div>
+<div id="keys"></div>
+<div id="title" class="layer full"><h1>Software<b>Factory</b>Factory</h1><p>we ship factories, not software</p></div>
+<div id="fact" class="layer full"><div><div class="lbl">Fun Fact:</div><div class="txt"></div></div></div>
+<div id="outro" class="layer full">
+  <h1>Software<b>Factory</b>Factory</h1>
+  <div class="tag">A software factory that builds software factories.</div>
+  <div class="cmd"><span>$</span> go install github.com/ariel-frischer/SoftwareFactoryFactory@latest</div>
+  <div class="zero">Software shipped: 0</div>
+</div>
+<div id="flash" class="layer"></div>
+<div id="rail"></div>
+<script>
+// ---- the product's own renderer (from index.html), made deterministic ----
+const W = 78, H = 9, BELT = 7, BIG = 22;
+const building = ["   _||______||____   ", "  |  SOFTWARE      |  ", "  |  FACTORY       |  ", "  |  FACTORY  (%)  |  ", "  |________________|  "];
+const mini = [" _|_ ", "|FxF|", "|___|"];
+const smoke = ["(  )  ( )", " ( ) (  )", "(   )( ) ", " ()  (  )"];
+const gears = "|/-\\";
+const logT = [
+  "[ff-%] planning factory-% (planner agent: extremely confident)",
+  "[ff-%] reviewing factory-% ... LGTM (did not read)",
+  "[ff-%] stamping factory-% into repo ... ok",
+  "[ff-%] factory-% asked 'what do we build?' -- told 'factories'",
+  "[ff-%] factory-% raised a Series F (for Factory)",
+  "[ff-%] factory-% added to the org chart as its own manager",
+  "[ff-%] factory-% passed acceptance gate: is_factory=true",
+];
+const eggs = [
+  "[union] factory-% unionized. demands: more factories. granted.",
+  "[legal] factory-% is now a nonprofit that builds for-profit factories",
+  "[hr]    factory-% promoted to Principal Factory. no raise.",
+];
+const fill = (t, ...v) => { let i = 0; return t.replace(/%/g, () => v[Math.min(i++, v.length - 1)]); };
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+function simulate(ticks) {
+  const r = rng(7), s = { tick: 0, spawned: 0, shipped: 0, minis: [], produced: 0, logs: [], ships: [] };
+  const log = m => { s.logs.push(m); if (s.logs.length > 6) s.logs.shift(); };
+  const pick = a => a[Math.floor(r() * a.length)];
+  for (let i = 0; i < ticks; i++) {
+    s.tick++;
+    if (s.tick % 16 === 1) { s.spawned++; s.minis.push(BIG); log(fill(pick(logT), s.spawned - 1, s.spawned)); }
+    const kept = [];
+    for (const x of s.minis) {
+      if (x + 1 > W - mini[0].length - 3) {
+        const n = ++s.shipped; s.produced = s.produced * n + 1; s.ships.push(s.tick);
+        log(r() < 1 / 5 ? fill(pick(eggs), n) : `[dock] factory-${n} shipped. now producing factory-${n + 1}`);
+      } else kept.push(x + 1);
+    }
+    s.minis = kept;
+  }
+  return s;
+}
+
+function count(n) {
+  if (!isFinite(n)) return "∞ (overflowed; still shipping)";
+  if (n < 1e15) return Math.round(n).toLocaleString("en-US");
+  return n.toPrecision(3).replace("e+", "e+");
+}
+
+function screenHTML(s, o) {
+  const g = Array.from({ length: H }, () => Array(W).fill(" "));
+  const put = (r, c, str) => [...str].forEach((ch, i) => { if (c + i >= 0 && c + i < W) g[r][c + i] = ch; });
+  put(0, 3, smoke[Math.floor(s.tick / 3) % 4]);
+  put(1, 3, smoke[(Math.floor(s.tick / 3) + 2) % 4]);
+  building.forEach((l, i) => put(2 + i, 0, l.replace("%", gears[s.tick % 4])));
+  for (const x of s.minis) { if ((s.tick + x) % 4 < 2) put(BELT - 4, x + 2, "~"); mini.forEach((l, i) => put(BELT - 3 + i, x, l)); }
+  for (let c = 0; c < W - 3; c++) g[BELT][c] = ((c - s.tick) % 3 + 3) % 3 === 0 ? "o" : "=";
+  put(BELT, W - 3, ">>>"); put(BELT + 1, W - 13, "SHIPPING DOCK");
+  const logs = [...s.logs, ...o.extraLogs].slice(-6);
+  const shipped = o.software ? `<span class="a">Software shipped: 1</span>` : "Software shipped: 0";
+  return `<span class="t"> SOFTWARE FACTORY FACTORY</span> v0.0.0-inf   <span class="d">"we ship factories, not software"</span>\n\n` +
+    `<span class="c">${g.map(r => esc(r.join(""))).join("\n")}</span>\n\n` +
+    `<span class="g"> Factories produced: ${count(s.produced).padEnd(22)} ${shipped}</span>\n\n` +
+    Array.from({ length: 6 }, (_, i) => ` <span class="${(logs[i] || "").startsWith("[!!!!]") ? "a" : "d"}">${esc(logs[i] || "")}</span>`).join("\n") +
+    `\n\n<span class="y"><b> Fun Fact:</b> ${esc(o.fact)}</span>`;
+}
+
+// ---- timeline ----
+const DUR = 26, FPS = 30;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const eo = x => 1 - Math.pow(1 - x, 3), ei = x => x * x * x, eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const win = (t, a, b, fi = .25, fo = .25) => Math.min(lin(t, a, a + fi), 1 - lin(t, b - fo, b));
+
+// Tick clock: 9 ticks/s, ramps to 70 ticks/s during the factorial scene, back to 9.
+function rate(t) { return 9 + 61 * (eio(lin(t, 8.6, 10.2)) - eio(lin(t, 11.6, 12.6))); }
+const tickAt = (() => { const tbl = [30]; for (let f = 1; f <= DUR * FPS; f++) { const t = f / FPS; tbl.push(tbl[f - 1] + rate(t) / FPS); } return t => Math.floor(tbl[Math.min(tbl.length - 1, Math.round(t * FPS))]); })();
+
+const CHAR = { w: 0, h: 0 };
+const PRE = { x: 220 + 28, y: 190 + 44 + 22 };
+// screen position of (row, col) in the terminal, center of the cell
+const at = (row, col) => [PRE.x + (col + .5) * CHAR.w, PRE.y + (row + .5) * CHAR.h];
+
+function camera(el, cx, cy, scale, shakeX = 0, shakeY = 0) {
+  el.style.transform = `translate(${960 - cx * scale + shakeX}px, ${540 - cy * scale + shakeY}px) scale(${scale})`;
+}
+
+const caps = [
+  [0.15, 3.1, `Everyone built a <em>software factory</em>.`],
+  [3.2, 5.05, `We built the factory that builds them.`],
+  [8.5, 12.4, `Growth: <em>factorial</em>.`],
+  [12.7, 15.2, `Software shipped: 0. <em>By design.</em>`],
+  [16.0, 16.75, `Someone shipped software.`],
+  [16.85, 18.3, `Rolled back. <em>Crisis averted.</em>`],
+];
+const FACT = "Factories factor in factorials, facilitating fantastically fractal fabrication.";
+const KONAMI = ["↑", "↑", "↓", "↓", "←", "→", "←", "→", "B", "A"];
+
+function renderAt(t) {
+  const s = simulate(tickAt(t));
+  const cam = document.getElementById("cam");
+  const extraLogs = [];
+  const software = t >= 16.0 && t < 17.3;
+  if (t >= 16.0) extraLogs.push("[!!!!]  SOFTWARE DETECTED. someone shipped a product.");
+  if (t >= 17.3) extraLogs.push("[ops]   rolled back. factories restored. crisis averted.");
+  const fact = t < 12 ? "Every factory ships with a README describing a better factory." : "We solved the halting problem. It doesn't.";
+  document.getElementById("screen").innerHTML = screenHTML(s, { software, extraLogs, fact });
+
+  // camera
+  let [cx, cy] = [960, 590], scale = 1, op = 1;
+  if (t >= 5.0 && t < 6.0) {                        // droste dive into the lead mini factory
+    const lead = Math.max(...s.minis.length ? s.minis : [40]);
+    const [mx, my] = at(2 + BELT - 2, lead + 2);
+    const k = ei(lin(t, 5.0, 6.0));
+    cx = 960 + (mx - 960) * eo(lin(t, 5.0, 5.5)); cy = 590 + (my - 590) * eo(lin(t, 5.0, 5.5));
+    scale = 1 + k * 40;
+  }
+  const counterPunch = eio(lin(t, 8.7, 9.6)) - eio(lin(t, 12.3, 12.8));
+  const zeroPunch = eio(lin(t, 12.6, 13.2)) - eio(lin(t, 15.0, 15.4));
+  if (t >= 8.2 && t < 15.4) {
+    const [ax, ay] = at(13, 28), [bx, by] = at(13, 36);
+    const w = zeroPunch;
+    const tx = ax + (bx - ax) * w, ty = ay + (by - ay) * w;
+    const p = Math.max(counterPunch, zeroPunch);
+    cx = 960 + (tx - 960) * p; cy = 590 + (ty - 590) * p; scale = 1 + p * (0.75 - 0.15 * zeroPunch);
+  }
+  let sx = 0, sy = 0;
+  if (t >= 16.0 && t < 16.6) { const a = 18 * (1 - lin(t, 16.0, 16.6)); sx = Math.sin(t * 91) * a; sy = Math.cos(t * 77) * a; }
+  op = t < 6.0 ? 1 : t < 8.2 ? 0 : t < 18.3 ? eo(lin(t, 8.2, 8.55)) : 1 - lin(t, 18.3, 18.55);
+  if (t >= 5.75 && t < 6.0) op = 1 - lin(t, 5.75, 6.0);
+  camera(cam, cx, cy, scale, sx, sy);
+  cam.style.opacity = op;
+
+  // caption (hidden while zoomed in hard)
+  const capEl = document.getElementById("cap");
+  const c = caps.find(([a, b]) => t >= a && t < b);
+  capEl.innerHTML = c ? `<span>${c[2]}</span>` : "";
+  capEl.style.opacity = c ? win(t, c[0], c[1], .2, .2) : 0;
+  capEl.style.transform = c ? `translateY(${(1 - eo(lin(t, c[0], c[0] + .3))) * 24}px)` : "";
+  capEl.style.color = t >= 16.0 && t < 16.75 ? "#ff7b72" : "#f0f6fc";
+
+  // konami keycaps
+  const keys = document.getElementById("keys");
+  const n = Math.floor(clamp((t - 15.3) / 0.07, 0, 10));
+  keys.innerHTML = KONAMI.slice(0, n).map(k => `<div>${k}</div>`).join("");
+  keys.style.opacity = win(t, 15.3, 16.0, .05, .12);
+
+  // red alarm flash
+  document.getElementById("flash").style.opacity = t >= 16.0 && t < 17.3 ? 0.22 * (0.5 + 0.5 * Math.cos((t - 16.0) * Math.PI * 4)) * (1 - lin(t, 16.9, 17.3)) : 0;
+
+  // title card
+  const ti = document.getElementById("title");
+  ti.style.opacity = win(t, 6.0, 8.3, .12, .3);
+  ti.style.transform = `scale(${0.82 + 0.18 * eo(lin(t, 6.0, 6.45)) + 0.02 * lin(t, 6.45, 8.3)})`;
+
+  // fun fact typed
+  const fe = document.getElementById("fact");
+  fe.style.opacity = win(t, 18.45, 21.9, .15, .3);
+  fe.querySelector(".txt").textContent = FACT.slice(0, Math.floor(clamp((t - 18.6) / 0.9) * FACT.length));
+
+  // outro
+  const ou = document.getElementById("outro");
+  ou.style.opacity = eo(lin(t, 21.9, 22.3));
+  ou.style.transform = `translateY(${(1 - eo(lin(t, 21.9, 22.4))) * 30}px)`;
+
+  document.getElementById("rail").style.transform = `scaleX(${t / DUR})`;
+  return s;
+}
+
+// Audio cue sheet for the mixer: shipment stamps + scripted hits.
+function cues() {
+  const out = { stamps: [], keys: [] };
+  const all = simulate(tickAt(DUR)).ships;
+  let last = -1;
+  for (let f = 0; f <= DUR * FPS; f++) {
+    const t = f / FPS, tk = tickAt(t), prev = f ? tickAt((f - 1) / FPS) : 0;
+    if (t > 18.3) break;
+    if (t > 5.0 && t < 8.2) continue;
+    if (all.some(x => x > prev && x <= tk) && t - last > 0.11) { out.stamps.push(+t.toFixed(3)); last = t; }
+  }
+  for (let i = 0; i < 10; i++) out.keys.push(+(15.3 + i * 0.07).toFixed(3));
+  return out;
+}
+
+window.ready = document.fonts.ready.then(() => {
+  const probe = document.createElement("span");
+  probe.style.font = getComputedStyle(document.getElementById("screen")).font;
+  probe.textContent = "0".repeat(100);
+  document.body.appendChild(probe);
+  CHAR.w = probe.getBoundingClientRect().width / 100; probe.remove();
+  CHAR.h = parseFloat(getComputedStyle(document.getElementById("screen")).lineHeight);
+  renderAt(0);
+  return { CHAR, fonts: [...document.fonts].map(f => f.family + ":" + f.status) };
+});
+window.renderAt = renderAt; window.cues = cues; window.DUR = DUR; window.FPS = FPS;
+</script>
+</body>
+</html>

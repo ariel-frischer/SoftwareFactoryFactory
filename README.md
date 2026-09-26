@@ -58,9 +58,4 @@ It's a factory.
 
 ```sh
 go test ./...        # proves no software ships
-vhs demo.tape        # re-render demo.gif
 ```
-
-## License
-
-MIT. Any factories your factories build are also MIT. So are theirs.
