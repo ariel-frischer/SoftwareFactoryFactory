@@ -3,7 +3,7 @@ Output demo.gif
 Set Shell bash
 Set FontSize 16
 Set Width 1000
-Set Height 620
+Set Height 680
 Set Padding 20
 Set Theme "GitHub Dark"
 Set TypingSpeed 50ms

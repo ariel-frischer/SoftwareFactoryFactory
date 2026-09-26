@@ -18,7 +18,9 @@ go install github.com/ariel-frischer/SoftwareFactoryFactory@latest
 SoftwareFactoryFactory
 ```
 
-Or open [`index.html`](index.html) in a browser. It runs the same factory, forever.
+Press `q` (or Esc / Ctrl-C) to quit. The factories keep factoring without you.
+
+Prebuilt binaries: [Releases](https://github.com/ariel-frischer/SoftwareFactoryFactory/releases). Live factory in your browser: **[ariel-frischer.github.io/SoftwareFactoryFactory](https://ariel-frischer.github.io/SoftwareFactoryFactory/)**.
 
 ## Features
 

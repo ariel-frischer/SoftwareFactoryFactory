@@ -12,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"golang.org/x/term"
 )
 
 // FactoryFactory is the only interface you will ever need.
@@ -115,7 +117,7 @@ type scene struct {
 
 func newScene() *scene {
 	r := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 42))
-	return &scene{ fact: r.IntN(len(funFacts)), rng: r}
+	return &scene{fact: r.IntN(len(funFacts)), rng: r}
 }
 
 func (s *scene) log(format string, a ...any) {
@@ -217,7 +219,9 @@ func (s *scene) render() string {
 	fact := funFacts[s.fact]
 	shown := min(len(fact), (s.tick-s.factAt)*3)
 	fmt.Fprintf(&b, "\n\033[1;33m Fun Fact:\033[0;33m %s\033[0m\033[K\n", fact[:shown])
-	return b.String()
+	b.WriteString("\n \033[2mpress q to quit (or esc / ctrl-c). the factories will keep factoring without you.\033[0m\033[K\n")
+	// Raw mode disables output post-processing, so emit explicit carriage returns.
+	return strings.ReplaceAll(b.String(), "\n", "\r\n")
 }
 
 func formatCount(n float64) string {
@@ -256,18 +260,52 @@ func main() {
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+	quit := make(chan struct{}, 1)
+	if fd := int(os.Stdin.Fd()); term.IsTerminal(fd) {
+		// Raw mode: read single keys without echoing them onto the factory floor.
+		if old, err := term.MakeRaw(fd); err == nil {
+			defer term.Restore(fd, old)
+			go readQuitKeys(quit)
+		}
+	}
 	fmt.Print("\033[?25l\033[2J")
+	defer fmt.Print("\033[?25h\r\n Factory factory halted. Software shipped: 0. Great quarter, team.\r\n")
 	s := newScene()
 	ticker := time.NewTicker(tickRate)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-sig:
-			fmt.Printf("\033[?25h\n Factory factory halted. Software shipped: 0. Great quarter, team.\n")
+			return
+		case <-quit:
 			return
 		case <-ticker.C:
 			s.step()
 			fmt.Print(s.render())
+		}
+	}
+}
+
+// readQuitKeys signals quit on q, Q, Esc, Ctrl-C, or Ctrl-D and swallows every other key.
+func readQuitKeys(quit chan<- struct{}) {
+	buf := make([]byte, 16)
+	for {
+		n, err := os.Stdin.Read(buf)
+		if err != nil {
+			quit <- struct{}{}
+			return
+		}
+		// A lone Esc quits; Esc followed by more bytes is an arrow/function key.
+		if n == 1 && buf[0] == 27 {
+			quit <- struct{}{}
+			return
+		}
+		for _, c := range buf[:n] {
+			switch c {
+			case 'q', 'Q', 3, 4:
+				quit <- struct{}{}
+				return
+			}
 		}
 	}
 }
