@@ -3,9 +3,10 @@
 > **A software factory that builds software factories.**
 > Software shipped: **0**. Factories shipped: **yes**.
 
-https://github.com/ariel-frischer/SoftwareFactoryFactory/raw/main/media/brag.mp4
-
 ![SoftwareFactoryFactory stamping out software factories on a conveyor belt](demo.gif)
+
+[![▶ Watch the 22s launch video](media/brag.jpg)](media/brag.mp4)
+<p align="center"><a href="media/brag.mp4">▶ Watch the launch video (22s, sound on)</a></p>
 
 Everyone has a software factory now. Nobody has a software factory *factory*.
 Until today.
