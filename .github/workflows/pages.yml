@@ -20,9 +20,9 @@ jobs:
       - run: go vet ./...
       - run: go test ./...
 
+  deploy:
     # Pages stays off while the repo is private; deploy starts once it's public.
     if: github.event_name != 'pull_request' && !github.event.repository.private
-    if: github.event_name != 'pull_request'
     needs: test
     runs-on: ubuntu-latest
     permissions:
