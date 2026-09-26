@@ -1,5 +1,2 @@
 /SoftwareFactoryFactory
-brag-output/*
-!brag-output/composition/
-!brag-output/brag-plan.md
-!brag-output/share-copy.txt
+brag-output/
